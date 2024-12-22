@@ -5,7 +5,6 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.contrib.auth.models import User
 
 from rest_framework.views import APIView, status, Response
 from rest_framework import permissions
@@ -44,7 +43,7 @@ class CityModel(models.Model):
     name = models.CharField(max_length=100, verbose_name="Название города")
     geographic_coordinates = models.CharField(max_length=100, null=True, blank=True, verbose_name="Географические координаты")
     region = models.ForeignKey(RegionModel, on_delete=models.DO_NOTHING, related_name='cities', verbose_name="Регион")
-    country = models.ForeignKey(CountryModel, on_delete=models.DO_NOTHING, verbose_name="Страна")
+    country = models.ForeignKey(CountryModel, on_delete=models.DO_NOTHING, related_name='cities', verbose_name="Страна")
 
     class Meta:
         db_table = '"api_cities"'
@@ -195,13 +194,13 @@ class GeneralInformationModel(models.Model):
     )
 
     WITHOUT_REPAIR = 'без ремонта'
-    RENDECORATING = 'косметический ремонт'
+    RENDECORATING = 'косметический ремонт'  # Исправлено на RENDECORATING
     EURO_RENOVATION = 'евро ремонт'
     DESIGNER = 'дизайнерский'
 
     REPAIR_CHOICES = (
         (WITHOUT_REPAIR, 'без ремонта'),
-        (REDECORATING, 'косметический ремонт'),
+        (RENDECORATING, 'косметический ремонт'),  # Исправлено на RENDECORATING
         (EURO_RENOVATION, 'евро ремонт'),
         (DESIGNER, 'дизайнерский'),
     )
@@ -214,13 +213,13 @@ class GeneralInformationModel(models.Model):
     count_sleeping_places = models.PositiveIntegerField(null=True, blank=True, verbose_name="Количество спальных мест")
 
     kitchen = models.CharField(
-        'kitchen',
+        max_length=100,  # Добавлен max_length
         choices=KITCHEN_CHOICES,
         default=WITHOUT_KITCHEN,
         verbose_name="Кухня"
     )
     room_repair = models.CharField(
-        'room repair',
+        max_length=100,  # Добавлен max_length
         choices=REPAIR_CHOICES,
         default=WITHOUT_REPAIR,
         verbose_name="Ремонт комнаты"
@@ -355,7 +354,7 @@ class ObjectRoomModel(models.Model):
     prepayment = models.FloatField(default=0.0, verbose_name="Предоплата")
     payment_day = models.FloatField(default=0.0, verbose_name="Оплата за сутки")
     payment_method = models.CharField(
-        'payment method',
+        max_length=100,  # Добавлен max_length
         choices=PAYMENT_METHOD_CHOICES,
         default=CASH,
         verbose_name="Метод оплаты"
@@ -412,12 +411,12 @@ class ReservationModel(models.Model):
 
 
 class RatingModel(models.Model):
-    cleanliness = models.PositiveSmallIntegerField(default=0, validators=(MinValueValidator(0.0), MaxValueValidator(10.0)), verbose_name="Чистота")
-    conformity_to_photos = models.PositiveSmallIntegerField(default=0, validators=(MinValueValidator(0.0), MaxValueValidator(10.0)), verbose_name="Соответствие фото")
-    timeliness_of_check_in = models.PositiveSmallIntegerField(default=0, validators=(MinValueValidator(0.0), MaxValueValidator(10.0)), verbose_name="Своевременность заселения")
-    price_quality = models.PositiveSmallIntegerField(default=0, validators=(MinValueValidator(0.0), MaxValueValidator(10.0)), verbose_name="Цена-качество")
-    location = models.PositiveSmallIntegerField(default=0, validators=(MinValueValidator(0.0), MaxValueValidator(10.0)), verbose_name="Расположение")
-    quality_of_service = models.PositiveSmallIntegerField(default=0, validators=(MinValueValidator(0.0), MaxValueValidator(10.0)), verbose_name="Качество обслуживания")
+    cleanliness = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)], verbose_name="Чистота")
+    conformity_to_photos = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)], verbose_name="Соответствие фото")
+    timeliness_of_check_in = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)], verbose_name="Своевременность заселения")
+    price_quality = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)], verbose_name="Цена-качество")
+    location = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)], verbose_name="Расположение")
+    quality_of_service = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)], verbose_name="Качество обслуживания")
     object_room = models.ForeignKey(ObjectRoomModel, on_delete=models.DO_NOTHING, null=True, blank=True, verbose_name="Объект")
 
     class Meta:
@@ -457,4 +456,4 @@ class ImagesModel(models.Model):
         unique_together = (('room_object', 'image_path'),)
 
     def __str__(self):
-        return f"Название файла: {self.image_path.split('/')[-1]}"
+        return f"Изображение для объекта {self.room_object.title}"
