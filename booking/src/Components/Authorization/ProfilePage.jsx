@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NavigateHeader from "../General page/NavigateHeader";
 import { jwtDecode } from "jwt-decode"; // Исправленный импорт
@@ -13,13 +13,13 @@ const ProfilePage = () => {
     const [error, setError] = useState(null);
 
     // Функция для декодирования JWT
-    const decodeToken = (token) => {
+    const decodeToken = useCallback((token) => {
         try {
             return jwtDecode(token); // Используем jwtDecode
         } catch (error) {
             return null;
         }
-    };
+    }, []);
 
     // Проверка наличия токена при загрузке страницы
     useEffect(() => {
@@ -35,39 +35,39 @@ const ProfilePage = () => {
         } else {
             navigate("/login"); // Перенаправление на страницу входа, если токена нет
         }
-    }, [navigate]);
+    }, [navigate, decodeToken]);
 
     // Получение данных пользователя
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await fetch(API_USERDATA, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "*/*",
-                        "Authorization": `Bearer ${tokens.access}`,
-                    },
-                    body: JSON.stringify({
-                        refresh_token: tokens.refresh,
-                    }),
-                });
+    const fetchUserData = useCallback(async () => {
+        try {
+            const response = await fetch(API_USERDATA, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "*/*",
+                    "Authorization": `Bearer ${tokens.access}`,
+                },
+                body: JSON.stringify({
+                    refresh_token: tokens.refresh,
+                }),
+            });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setUserData(data);
-                } else {
-                    setError("Ошибка при получении данных пользователя");
-                }
-            } catch (error) {
-                setError("Произошла ошибка при подключении к серверу");
+            if (response.ok) {
+                const data = await response.json();
+                setUserData(data);
+            } else {
+                setError("Ошибка при получении данных пользователя");
             }
-        };
+        } catch (error) {
+            setError("Произошла ошибка при подключении к серверу");
+        }
+    }, [tokens]);
 
+    useEffect(() => {
         if (tokens.access) {
             fetchUserData();
         }
-    }, [tokens]);
+    }, [tokens, fetchUserData]);
 
     return (
         <div>
