@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'drf_yasg',
-    'api_apartment_search.apps.ApiApartmentSearchConfig'
+    'api_apartment_search.apps.ApiApartmentSearchConfig',
+    'phonenumber_field'
 ]
 
 MIDDLEWARE = [

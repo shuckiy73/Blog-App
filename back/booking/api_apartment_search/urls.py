@@ -21,8 +21,8 @@ urlpatterns = [
     path('', include(router.urls)),
 
     # Бронирование и избранное
-    path('booking/<id>/', views.BookingViewSet.as_view(), name='booking'),  # Бронирование объекта
-    path('images/<room_object_id>/', views.ImagesViewSet.as_view(), name='get_object_images'),  # Получение изображений объекта
+    path('booking/<int:id>/', views.BookingViewSet.as_view(), name='booking'),  # Бронирование объекта
+    path('images/<int:room_object_id>/', views.ImagesViewSet.as_view(), name='get_object_images'),  # Получение изображений объекта
     path('update_rating/', views.UpdateRatingViewSet.as_view(), name="update_rating"),  # Обновление рейтинга объекта
     path('add_to_favorite/', views.FavoriteViewSet.as_view(), name="add_to_favorite"),  # Добавление объекта в избранное
 
@@ -34,4 +34,24 @@ urlpatterns = [
     path('auth/login/', views.LoginAPIView.as_view(), name='login'),  # Вход пользователя
     path('auth/logout/', views.LogoutAPIView.as_view(), name='logout'),  # Выход пользователя
     path('auth/reset-all-token/', views.ResetTokenAPIView.as_view(), name='reset-all-token'),  # Сброс всех токенов
+]
+
+# Документация API
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="API Documentation",
+        default_version='v1',
+        description="API documentation for your project",
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
+urlpatterns += [
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

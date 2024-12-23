@@ -1,13 +1,7 @@
-import time
-from datetime import datetime, timedelta
-
-import uuid
+from datetime import datetime, timedelta  # Добавлен импорт datetime и timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
-
-from rest_framework.views import APIView, status, Response
-from rest_framework import permissions
 
 
 # Create your models here.
@@ -17,9 +11,9 @@ class CountryModel(models.Model):
     geographic_coordinates = models.CharField(max_length=100, null=True, blank=True, verbose_name="Географические координаты")
 
     class Meta:
-        db_table = '"api_countries"'
+        db_table = 'api_countries'  # Удалены лишние кавычки
         verbose_name_plural = 'Страны'
-        verbose_name = 'Страну'
+        verbose_name = 'Страна'
 
     def __str__(self):
         return self.name
@@ -31,7 +25,7 @@ class RegionModel(models.Model):
     country = models.ForeignKey(CountryModel, on_delete=models.DO_NOTHING, related_name='regions', verbose_name="Страна")
 
     class Meta:
-        db_table = '"api_regions"'
+        db_table = 'api_regions'  # Удалены лишние кавычки
         verbose_name_plural = 'Регионы'
         verbose_name = 'Регион'
 
@@ -46,7 +40,7 @@ class CityModel(models.Model):
     country = models.ForeignKey(CountryModel, on_delete=models.DO_NOTHING, related_name='cities', verbose_name="Страна")
 
     class Meta:
-        db_table = '"api_cities"'
+        db_table = 'api_cities'  # Удалены лишние кавычки
         verbose_name_plural = 'Города'
         verbose_name = 'Город'
 
@@ -81,7 +75,7 @@ class StreetTypeModel(models.Model):
     street_type = models.CharField(max_length=100, verbose_name="Тип улицы")
 
     class Meta:
-        db_table = '"api_streettypes"'
+        db_table = 'api_streettypes'  # Удалены лишние кавычки
         verbose_name_plural = 'Типы улиц'
         verbose_name = 'Тип улицы'
 
@@ -98,7 +92,7 @@ class AddressModel(models.Model):
     has_elevator = models.BooleanField(default=False, verbose_name="Наличие лифта")
 
     class Meta:
-        db_table = '"api_addresses"'
+        db_table = 'api_addresses'  # Удалены лишние кавычки
         verbose_name_plural = "Адреса зданий"
         verbose_name = "Адрес здания"
 
@@ -119,7 +113,7 @@ class BuildingGroupTypeModel(models.Model):
     description = models.TextField(verbose_name="Описание")
 
     class Meta:
-        db_table = '"api_buildinggrouptypes"'
+        db_table = 'api_buildinggrouptypes'  # Удалены лишние кавычки
         verbose_name_plural = 'Группы строений'
         verbose_name = 'Группа строения'
 
@@ -172,8 +166,8 @@ class BuildingTypeModel(models.Model):
     building_type_group = models.ForeignKey(BuildingGroupTypeModel, on_delete=models.DO_NOTHING, verbose_name="Группа строения")
 
     class Meta:
-        db_table = '"api_buildingtype"'
-        verbose_name_plural = 'Тип строений'
+        db_table = 'api_buildingtype'  # Удалены лишние кавычки
+        verbose_name_plural = 'Типы строений'
         verbose_name = 'Тип строения'
 
     def __str__(self):
@@ -226,7 +220,7 @@ class GeneralInformationModel(models.Model):
     )
 
     class Meta:
-        db_table = '"api_general_info"'
+        db_table = 'api_general_info'  # Удалены лишние кавычки
         verbose_name_plural = 'Общая информация'
         verbose_name = 'Общая информация'
 
@@ -247,7 +241,7 @@ class BedTypesModel(models.Model):
     bed_type = models.CharField(max_length=100, unique=True, verbose_name="Тип кровати")
 
     class Meta:
-        db_table = '"api_bedtypes"'
+        db_table = 'api_bedtypes'  # Удалены лишние кавычки
         verbose_name_plural = 'Типы спальных мест'
         verbose_name = 'Тип спального места'
 
@@ -276,7 +270,7 @@ class BathroomAmenitiesModel(models.Model):
     bathroom_amenities_name = models.CharField(max_length=100, unique=True, verbose_name="Удобства ванной комнаты")
 
     class Meta:
-        db_table = '"api_bathroomamenities"'
+        db_table = 'api_bathroomamenities'  # Удалены лишние кавычки
         verbose_name_plural = 'Типы ванной комнаты'
         verbose_name = 'Тип ванной комнаты'
 
@@ -301,7 +295,7 @@ class CategoriesAmenitiesModel(models.Model):
     categories_amenities_description = models.TextField(null=True, blank=True, verbose_name="Описание категории удобств")
 
     class Meta:
-        db_table = '"api_categoriesamenities"'
+        db_table = 'api_categoriesamenities'  # Удалены лишние кавычки
         verbose_name_plural = 'Категории удобств'
         verbose_name = 'Категория удобства'
 
@@ -317,8 +311,8 @@ class AmenitiesModel(models.Model):  # Amenities - удобства
     amenities_category = models.ForeignKey(CategoriesAmenitiesModel, on_delete=models.DO_NOTHING, verbose_name="Категория удобств")
 
     class Meta:
-        db_table = '"api_amenities"'
-        verbose_name_plural = 'Удобство'
+        db_table = 'api_amenities'  # Удалены лишние кавычки
+        verbose_name_plural = 'Удобства'
         verbose_name = 'Удобство'
 
     def __str__(self):
@@ -333,7 +327,7 @@ class PlacingRulesModel(models.Model):
     accounting_documents = models.BooleanField(default=False, verbose_name="Предоставление документов")
 
     class Meta:
-        db_table = '"api_placingrules"'
+        db_table = 'api_placingrules'  # Удалены лишние кавычки
         verbose_name_plural = 'Правила размещения'
         verbose_name = 'Правило размещения'
 
@@ -373,7 +367,7 @@ class ObjectRoomModel(models.Model):
     owner = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, verbose_name="Собственник")
 
     class Meta:
-        db_table = '"api_objectrooms"'
+        db_table = 'api_objectrooms'  # Удалены лишние кавычки
         verbose_name_plural = 'Объекты'
         verbose_name = 'Объект'
 
@@ -387,7 +381,7 @@ class FavoritesModel(models.Model):
     create_datetime = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     class Meta:
-        db_table = '"api_favorites"'
+        db_table = 'api_favorites'  # Удалены лишние кавычки
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
         unique_together = (('room_object', 'user'),)
@@ -401,9 +395,9 @@ class ReservationModel(models.Model):
     is_confirmed = models.BooleanField(default=False)
 
     class Meta:
-        db_table = '"api_reservation"'
-        verbose_name = 'бронь'
-        verbose_name_plural = 'брони'
+        db_table = 'api_reservation'  # Удалены лишние кавычки
+        verbose_name = 'Бронь'
+        verbose_name_plural = 'Брони'
         unique_together = (('room', 'start_date', 'end_date'),)
 
     def __str__(self):
@@ -420,7 +414,7 @@ class RatingModel(models.Model):
     object_room = models.ForeignKey(ObjectRoomModel, on_delete=models.DO_NOTHING, null=True, blank=True, verbose_name="Объект")
 
     class Meta:
-        db_table = '"api_ratings"'
+        db_table = 'api_ratings'  # Удалены лишние кавычки
         verbose_name = "Оценка"
         verbose_name_plural = "Оценки"
 
@@ -439,7 +433,7 @@ class ReviewsModel(models.Model):
     ratings = models.ForeignKey(RatingModel, on_delete=models.CASCADE, verbose_name="Оценки")
 
     class Meta:
-        db_table = '"api_reviews"'
+        db_table = 'api_reviews'  # Удалены лишние кавычки
         verbose_name = "Отзыв"
         verbose_name_plural = "Отзывы"
         unique_together = (('room_object', 'user'),)
@@ -450,7 +444,7 @@ class ImagesModel(models.Model):
     room_object = models.ForeignKey(ObjectRoomModel, on_delete=models.DO_NOTHING, verbose_name="Объект")
 
     class Meta:
-        db_table = '"api_images"'
+        db_table = 'api_images'  # Удалены лишние кавычки
         verbose_name = "Изображение"
         verbose_name_plural = "Изображения"
         unique_together = (('room_object', 'image_path'),)
