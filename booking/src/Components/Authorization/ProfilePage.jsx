@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NavigateHeader from "../General page/NavigateHeader";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Исправленный импорт
 
 const ProfilePage = () => {
     const { id } = useParams();
@@ -15,7 +15,7 @@ const ProfilePage = () => {
     // Функция для декодирования JWT
     const decodeToken = (token) => {
         try {
-            return jwt_decode(token);
+            return jwtDecode(token); // Используем jwtDecode
         } catch (error) {
             return null;
         }

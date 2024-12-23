@@ -3,6 +3,7 @@ import React from "react";
 const Carousel = () => {
     return (
         <div id="carouselExampleIndicators" className="carousel slide" data-bs-ride="carousel">
+            {/* Индикаторы слайдов */}
             <div className="carousel-indicators">
                 <button
                     type="button"
@@ -25,15 +26,15 @@ const Carousel = () => {
                     aria-label="Slide 3"
                 ></button>
             </div>
+
+            {/* Слайды */}
             <div className="carousel-inner">
                 <div className="carousel-item active">
                     <img
                         src="/image/background/background_1.jpg"
                         className="d-block w-100"
                         alt="Первый слайд"
-                        width="1000"
-                        height="600"
-                        style={{ display: "flex", objectFit: "cover" }}
+                        style={{ objectFit: "cover", height: "600px" }}
                     />
                 </div>
                 <div className="carousel-item">
@@ -41,9 +42,7 @@ const Carousel = () => {
                         src="/image/background/background_2.jpg"
                         className="d-block w-100"
                         alt="Второй слайд"
-                        width="1000"
-                        height="600"
-                        style={{ display: "flex", objectFit: "cover" }}
+                        style={{ objectFit: "cover", height: "600px" }}
                     />
                 </div>
                 <div className="carousel-item">
@@ -51,12 +50,12 @@ const Carousel = () => {
                         src="/image/background/background_3.jpg"
                         className="d-block w-100"
                         alt="Третий слайд"
-                        width="1000"
-                        height="600"
-                        style={{ display: "flex", objectFit: "cover" }}
+                        style={{ objectFit: "cover", height: "600px" }}
                     />
                 </div>
             </div>
+
+            {/* Кнопки управления */}
             <button
                 className="carousel-control-prev"
                 type="button"
