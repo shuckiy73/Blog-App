@@ -1,35 +1,36 @@
-import React, {useState} from "react"
-import DirectionRouteCard from "./Main page/DirectionRouteCard";
-
+import React, { useState } from "react";
+import { Modal, Button } from "react-bootstrap";
 
 const ModalSignIn = () => {
-    const myModal = document.getElementById('myModal')
-    const myInput = document.getElementById('myInput')
+    const [showModal, setShowModal] = useState(false);
 
-    myModal.addEventListener('shown.bs.modal', () => {
-      myInput.focus()
-    })
+    const handleClose = () => setShowModal(false);
+    const handleShow = () => setShowModal(true);
 
     return (
-        <div className="modal" tabIndex="-1">
-            <div className="modal-dialog">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title">Modal title</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div className="modal-body">
-                        <p>Modal body text goes here.</p>
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" className="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-};
+        <>
+            <Button variant="primary" onClick={handleShow}>
+                Открыть модальное окно
+            </Button>
 
+            <Modal show={showModal} onHide={handleClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Модальное окно</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Текст модального окна.</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Закрыть
+                    </Button>
+                    <Button variant="primary" onClick={handleClose}>
+                        Сохранить изменения
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
+};
 
 export default ModalSignIn;

@@ -16,17 +16,18 @@ from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, Bl
 # ===============
 class ResetTokenAPIView(APIView):
     """
-    Добавляет все refresh токены пользователя в черный список. нужен Access token
+    Добавляет все refresh токены пользователя в черный список. Нужен Access token.
     МОЖНО ИСПОЛЬЗОВАТЬ ЧТО БЫ РАЗЛОГИНИТЬ СО ВСЕХ УСТРОЙСТВ
     """
     permission_classes = (permissions.IsAuthenticated,)
+
     def post(self, request) -> Response:
         try:
             tokens = OutstandingToken.objects.filter(user_id=request.user.id)
             for token in tokens:
                 t, _ = BlacklistedToken.objects.get_or_create(token=token)
 
-            return Response({'success':"Все токены пользователя отозваны!"}, status=status.HTTP_205_RESET_CONTENT)
+            return Response({'success': "Все токены пользователя отозваны!"}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -35,22 +36,20 @@ class RegistrationAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
-        print(request.data)
         user_serializer = CustomUserSerializer(data=request.data)
         if user_serializer.is_valid():
             user = user_serializer.save()
-            refresh = RefreshToken.for_user(user)  # Создание Refesh и Access
-            refresh.payload.update({  # Полезная информация в самом токене
-                'user_id': user.id,
-                'username': user.username,
-            })
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),  # Отправка на клиент
-            }, status=status.HTTP_201_CREATED)
-        else:
-            print(user_serializer.errors)
-            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            if user:
+                refresh = RefreshToken.for_user(user)  # Создание Refesh и Access
+                refresh.payload.update({  # Полезная информация в самом токене
+                    'user_id': user.id,
+                    'username': user.username,
+                })
+                return Response({
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),  # Отправка на клиент
+                }, status=status.HTTP_201_CREATED)
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginAPIView(APIView):
@@ -66,6 +65,10 @@ class LoginAPIView(APIView):
         user = authenticate(username=username, password=password)
         if user is None:
             return Response({'error': 'Неверный логин или пароль! Проверьте, пожалуйста, учётные данные!'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+
+        if not user.is_active:
+            return Response({'error': 'Пользователь не активен'},
                             status=status.HTTP_401_UNAUTHORIZED)
 
         refresh = RefreshToken.for_user(user)
@@ -91,6 +94,9 @@ class LogoutAPIView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
         try:
             token = RefreshToken(refresh_token)
+            if token.payload['user_id'] != request.user.id:
+                return Response({'error': 'Неверный Refresh token'},
+                                status=status.HTTP_400_BAD_REQUEST)
             token.blacklist()  # Добавить его в чёрный список
         except Exception as e:
             return Response({'error': 'Неверный Refresh token'},

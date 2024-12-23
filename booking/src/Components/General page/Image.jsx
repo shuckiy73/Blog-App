@@ -1,20 +1,15 @@
-import React, {Component, useState, useEffect, Link} from "react";
-import axios from "axios";
+import React from "react";
 
-
-const Image = (props) => {
-    // console.log("___________________", props.image)
+const Image = ({ image }) => {
     return (
-
-
-            <img src={props.image}
-                 className="d-block rounded-end"
-                 alt="..."
-                 height="200" style={{display: "flex", objectFit: "cover"}}/>
-
+        <img
+            src={image}
+            className="d-block rounded-end"
+            alt="..."
+            height="200"
+            style={{ display: "flex", objectFit: "cover" }}
+        />
     );
-
 };
-
 
 export default Image;

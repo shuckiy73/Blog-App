@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime  # Добавлен импорт datetime
 
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404

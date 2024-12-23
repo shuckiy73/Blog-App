@@ -67,7 +67,6 @@ class BuildingTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.BuildingTypeModel
         fields = ('building_type_name', 'building_type_group')
-        read_only_fields = ('building_type_name', 'building_type_group')
         # Добавляем verbose_name для документации
         extra_kwargs = {
             'building_type_name': {'label': 'Тип строения'},
@@ -189,9 +188,8 @@ class ObjectRoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ObjectRoomModel
-        exclude = (
-            "create_datetime",
-        )
+        fields = '__all__'
+        read_only_fields = ('create_datetime',)
         # Добавляем verbose_name для документации
         extra_kwargs = {
             'title': {'label': 'Название объекта'},
