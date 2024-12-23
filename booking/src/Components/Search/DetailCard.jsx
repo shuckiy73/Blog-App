@@ -1,55 +1,62 @@
-import React, {Component, useState, useEffect, Link} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import Footer from "../General page/Footer";
 import NavigateHeader from "../General page/NavigateHeader";
 import Card from "./Card";
 import NotFound from "../General page/NotFound";
 
-const DetailCard = (props) => {
+const DetailCard = ({ images }) => {
+    const { id } = useParams(); // Получаем параметр id из URL
+    const [objectRoom, setObjectRoom] = useState(null); // Состояние для объекта
+    const [reviews, setReviews] = useState([]); // Состояние для отзывов
+    const [loading, setLoading] = useState(true); // Состояние для индикации загрузки
+    const [error, setError] = useState(null); // Состояние для ошибок
 
-    // получаем параметры
-    // const navigate = useNavigate();
-    const {id} = useParams();
-    const [ObjectRoom, setObjectRoom] = useState({});
-    const [reviews, setReviews] = useState({});
-    const API_URL_ID = "http://127.0.0.1:8000/api/v1/search/"
-    const API_REVIEWS = "http://127.0.0.1:8000/api/v1/object_reviews/"
+    const API_URL_ID = "http://127.0.0.1:8000/api/v1/search/";
+    const API_REVIEWS = "http://127.0.0.1:8000/api/v1/object_reviews/";
+
     const HEADERS = {
         'Accept': '*/*',
-        // "Authorization": `Bearer ${sessionStorage.getItem("auth_token")}`
     };
-    console.log('DETAIL CARD ___ ', props.images)
 
-    useEffect(
-        () => {
-            async function getData () {
-                const response = await axios.get(API_URL_ID + id + '/', {headers: HEADERS})
-                    .then((response) => {
-                        setObjectRoom(response.data);
-                    }).catch((error) => {
-                        console.log(error);
-                    })
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Запрос данных об объекте
+                const [objectResponse, reviewsResponse] = await Promise.all([
+                    axios.get(`${API_URL_ID}${id}/`, { headers: HEADERS }),
+                    axios.get(`${API_REVIEWS}${id}/`, { headers: HEADERS }),
+                ]);
 
-                const response_reviews = await axios.get(API_REVIEWS + id + '/', {headers: HEADERS})
-                    .then((response) => {
-                        setReviews(response.data)
-                    }).catch((error) => {
-                        console.log(error);
-                    })
-            };
-            getData()
-        },[]);
+                setObjectRoom(objectResponse.data); // Устанавливаем данные об объекте
+                setReviews(reviewsResponse.data); // Устанавливаем отзывы
+                setLoading(false); // Завершаем загрузку
+            } catch (error) {
+                console.error("Ошибка при загрузке данных:", error);
+                setError(error); // Устанавливаем ошибку
+                setLoading(false); // Завершаем загрузку
+            }
+        };
 
+        fetchData();
+    }, [id]);
+
+    if (loading) {
+        return <div>Загрузка...</div>; // Показываем индикатор загрузки
+    }
+
+    if (error) {
+        return <NotFound />; // Показываем страницу 404 в случае ошибки
+    }
 
     return (
         <div>
-            <NavigateHeader/>
-             <Card item={ObjectRoom} reviews={reviews} image={props.images}/>
-            <Footer/>
+            <NavigateHeader />
+            <Card item={objectRoom} reviews={reviews} images={images} />
+            <Footer />
         </div>
-
-    )
+    );
 };
 
 export default DetailCard;

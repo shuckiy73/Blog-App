@@ -1,21 +1,21 @@
-import React, {Component, useState, useEffect, Link} from "react";
-import {useParams} from "react-router-dom";
-import axios from "axios";
+import React from "react";
 import Review from "./Review";
-import BriefItemCard from "../BriefItemCard";
 
-const Reviews = (props) => {
-    // console.log(props.reviews);
+const Reviews = ({ reviews }) => {
     return (
         <div className="container">
-            {props.reviews.length !== 0 ? props.reviews.map((item) =>
-                <div className="container">
-                    <Review
-                        item={item}/><hr/>
-                </div>) : ""}
+            {reviews.length !== 0 ? (
+                reviews.map((item, index) => (
+                    <div className="container" key={index}>
+                        <Review item={item} />
+                        <hr />
+                    </div>
+                ))
+            ) : (
+                <p>Нет отзывов</p>
+            )}
         </div>
     );
-
 };
 
 export default Reviews;

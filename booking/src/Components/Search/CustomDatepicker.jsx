@@ -1,77 +1,63 @@
-import React, {Component, useState, useEffect, Link} from "react";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
-import AirDatepicker from 'air-datepicker';
-import 'air-datepicker/air-datepicker.css';
+import "react-datepicker/dist/react-datepicker.css";
 
+const CustomDatepicker = ({ mode = "single" }) => {
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
-const CustomDatepicker = () => {
-    // const [startDate, setStartDate] = useState(new Date());
-    // const [endDate, setEndDate] = useState(new Date("2014/02/10"));
-    const [startDate, setStartDate] = useState(new Date());
-    return (
-        // <DatePicker selected={}
-        //             onSelect={handleDateSelect} //when day is clicked
-        //             onChange={handleDateChange} //only when value has changed
-        // />
-        <p></p>
-    );
-    //
-    //
-    //
-    //   <DatePicker
-    //     renderCustomHeader={({
-    //       monthDate,
-    //       customHeaderCount,
-    //       decreaseMonth,
-    //       increaseMonth,
-    //     }) => (
-    //       <div>
-    //         <button
-    //           aria-label="Previous Month"
-    //           className={
-    //             "react-datepicker__navigation react-datepicker__navigation--previous"
-    //           }
-    //           style={customHeaderCount === 1 ? { visibility: "hidden" } : null}
-    //           onClick={decreaseMonth}
-    //         >
-    //           <span
-    //             className={
-    //               "react-datepicker__navigation-icon react-datepicker__navigation-icon--previous"
-    //             }
-    //           >
-    //             {"<"}
-    //           </span>
-    //         </button>
-    //         <span className="react-datepicker__current-month">
-    //           {monthDate.toLocaleString("en-US", {
-    //             month: "long",
-    //             year: "numeric",
-    //           })}
-    //         </span>
-    //         <button
-    //           aria-label="Next Month"
-    //           className={
-    //             "react-datepicker__navigation react-datepicker__navigation--next"
-    //           }
-    //           style={customHeaderCount === 0 ? { visibility: "hidden" } : null}
-    //           onClick={increaseMonth}
-    //         >
-    //           <span
-    //             className={
-    //               "react-datepicker__navigation-icon react-datepicker__navigation-icon--next"
-    //             }
-    //           >
-    //             {">"}
-    //           </span>
-    //         </button>
-    //       </div>
-    //     )}
-    //     selected={startDate}
-    //     onChange={(date) => setStartDate(date)}
-    //     monthsShown={2}
-    //   />
-    // );
+    if (mode === "single") {
+        return (
+            <div>
+                <h3>Выберите дату:</h3>
+                <DatePicker
+                    selected={startDate || new Date()}
+                    onChange={(date) => setStartDate(date)}
+                    dateFormat="dd/MM/yyyy"
+                    isClearable
+                    placeholderText="Нажмите, чтобы выбрать дату"
+                    className="form-control"
+                />
+            </div>
+        );
+    }
+
+    if (mode === "range") {
+        return (
+            <div>
+                <h3>Выберите диапазон дат:</h3>
+                <div className="row">
+                    <div className="col">
+                        <label>Дата начала:</label>
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            selectsStart
+                            startDate={startDate}
+                            endDate={endDate}
+                            dateFormat="dd/MM/yyyy"
+                            className="form-control"
+                        />
+                    </div>
+                    <div className="col">
+                        <label>Дата окончания:</label>
+                        <DatePicker
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            selectsEnd
+                            startDate={startDate}
+                            endDate={endDate}
+                            minDate={startDate}
+                            dateFormat="dd/MM/yyyy"
+                            className="form-control"
+                        />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return null;
 };
-
 
 export default CustomDatepicker;
